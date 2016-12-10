@@ -12,6 +12,14 @@ import Alamofire
 class ItunesSearchDelegate {
     
     
+    /*
+     Queries iTunes Store.
+
+     queryTerm: Term to be searched.
+     queryCountry: iTunes store Locale to be queried.
+     
+     return DataResponse<[StoreItem]> Callback method to be executed.
+     */
     public func queryItunes(queryTerm: String, queryCountry:
         String = "US", responseHandler : @escaping ((DataResponse<[StoreItem]>) -> Void)) -> Bool {
         

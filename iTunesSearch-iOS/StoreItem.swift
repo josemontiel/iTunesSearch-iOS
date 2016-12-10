@@ -10,12 +10,19 @@ import Foundation
 
 final class StoreItem : ResponseObjectSerializable, ResponseCollectionSerializable, CustomStringConvertible {
     
+    // Item's Track Id
     let trackId: Int64?;
+    // Item Artist's Id
     let artistId: Int64?;
+    // Track Name
     let trackName: String?;
+    // Artist Name
     let artistName: String?;
+    // Store Item Type
     let kind: String?;
+    // iTunes Item's URL
     let viewUrl: String?;
+    // Artwork preview URL 100x100
     let artworkUrl: String?;
     
     var description: String {
@@ -42,6 +49,9 @@ final class StoreItem : ResponseObjectSerializable, ResponseCollectionSerializab
         self.artworkUrl = artworkUrl;
     }
     
+    /*
+     Returns a human readable _Kind_ value.
+     */
     func getKind() -> String {
         if (self.kind == nil) {
             return "";
@@ -78,6 +88,9 @@ final class StoreItem : ResponseObjectSerializable, ResponseCollectionSerializab
         }
     }
 
+    /*
+     Custom Response Deserializer for type StoreItem 
+     */
     static func collection(response: HTTPURLResponse, representation: Any) -> [StoreItem] {
         var collection: [StoreItem] = []
         

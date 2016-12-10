@@ -27,8 +27,10 @@ class ItunesSearchViewController : UIViewController, UITableViewDataSource, UITa
     override func viewDidLoad() {
         super.viewDidLoad();
         
+        // Centers the Activity Indicator in the Viewport.
         self.activityIndicator.center = self.view.center;
         
+        // Instantiates our SearchController. TODO: Use proper Dependency Injection.
         self.searchController = ItunesSearchController.init(viewController: self);
         
     }
@@ -37,6 +39,9 @@ class ItunesSearchViewController : UIViewController, UITableViewDataSource, UITa
         super.didReceiveMemoryWarning()
     }
     
+    /*
+     Callback Method when iTunes Searches are completed.
+     */
     func onSearchResults(storeItems: [StoreItem]) {
         self.storeItemsArray = storeItems;
         self.activityIndicator.stopAnimating();
@@ -50,6 +55,9 @@ class ItunesSearchViewController : UIViewController, UITableViewDataSource, UITa
         }
     }
     
+    //////////////////////////
+    // UITableView Methods //
+    ////////////////////////
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return (storeItemsArray != nil) ? storeItemsArray!.count : 0;
@@ -60,26 +68,24 @@ class ItunesSearchViewController : UIViewController, UITableViewDataSource, UITa
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        // Getting the right element
+        // Getting the StoreItem for the given table view index to populate
         let item = (storeItemsArray?[indexPath.row])!
         
-        // Instantiate a cell
+        // Dequeue a Table View Cell
         let cellIdentifier = "cell"
         let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier) as! StoreItemCell;
         
-        // Adding the right informations
+        // Set StoreItem information into the Cell UI
         cell.titleLabel?.text = item.trackName;
         cell.subtitleLabel?.text = item.artistName;
         cell.kindLabel?.text = item.getKind();
         
+        // Load Artwork Asynchronously into our UIImageView
         let imageView = cell.trackImageView!;
         imageView.image = nil;
-        
         let url = URL(string: item.artworkUrl!)!
-        
         imageView.af_setImage(withURL: url);
     
-        
         // Returning the cell
         return cell
     }
@@ -87,30 +93,41 @@ class ItunesSearchViewController : UIViewController, UITableViewDataSource, UITa
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedItem = (self.storeItemsArray?[indexPath.item])!;
         
+        // A StoreItem has been clicked. Notify our Search Controller.
         searchController.onItemSelected(selectedItem: selectedItem);
 
     }
-    
-    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
-        
-    }
+
+    //////////////////////////////////
+    // UISearchBarDelegate Methods //
+    ////////////////////////////////
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         
+        // If a Timer with a Delayed Query has already been set, invalidate it.
         if (searchTimer.isValid) {
             searchTimer.invalidate();
         }
         
+        // Set a new Timer for our new Query
         searchTimer = Timer.scheduledTimer(withTimeInterval: 0.7, repeats: false, block: { _ in
+            // Perform Search
             self.performSearch();
         });
     }
     
+    /*
+     Performs a new iTunes Search
+     */
     func performSearch() {
+        // Get Query Term from our UISearchBar
         let query: String = self.searchBar.text!;
+        // Chec Controller is still valid and our query term is valid.
         if (self.searchController != nil && !query.isEmpty) {
+            // Perform Search and notify our UIActivityIndicator
             self.searchController.queryItunes(term: query) ? self.activityIndicator.startAnimating() : self.activityIndicator.stopAnimating();
         } else {
+            // If query is emtpy then remove any items already set by setting an empty collection.
             onSearchResults(storeItems: []);
         }
     }

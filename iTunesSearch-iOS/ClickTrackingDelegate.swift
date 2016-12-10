@@ -14,8 +14,12 @@ final class ClickTrackingDelegate {
     
     static public var EVENT_URL = "https://itunessearch.herokuapp.com/api/event";
 
+    /*
+     Sends a POST request to our backend indicating a Click event on a StoreItem has occurred.
+     */
     public static func trackClick(item: StoreItem) {
         
+        // Unique Device Id. Needed for "Per User" tracking.
         let uniqueId=UIDevice.current.identifierForVendor!.uuidString;
 
 
@@ -27,7 +31,6 @@ final class ClickTrackingDelegate {
         ];
         
         Alamofire.request(EVENT_URL, method: .post, parameters: parameters, encoding: JSONEncoding.default).response(completionHandler: { response in
-            
             debugPrint(response);
         });
 
