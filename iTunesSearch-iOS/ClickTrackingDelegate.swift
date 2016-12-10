@@ -20,7 +20,8 @@ final class ClickTrackingDelegate {
 
 
         let parameters: Parameters = [
-            "trackId": item.trackId,
+            "trackId": item.trackId as Any,
+            "artistId": item.artistId as Any,
             "timestamp": Date.init().timeIntervalSince1970,
             "deviceId": uniqueId
         ];

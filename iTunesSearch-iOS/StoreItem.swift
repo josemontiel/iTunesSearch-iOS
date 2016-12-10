@@ -10,10 +10,11 @@ import Foundation
 
 final class StoreItem : ResponseObjectSerializable, ResponseCollectionSerializable, CustomStringConvertible {
     
-    let trackId: Int64;
-    let trackName: String;
-    let artistName: String;
-    let kind: String;
+    let trackId: Int64?;
+    let artistId: Int64?;
+    let trackName: String?;
+    let artistName: String?;
+    let kind: String?;
     let viewUrl: String?;
     let artworkUrl: String?;
     
@@ -25,22 +26,27 @@ final class StoreItem : ResponseObjectSerializable, ResponseCollectionSerializab
         
         let representation = representation as? [String: Any];
         let trackId = representation?["trackId"] as? Int64;
+        let artistId = representation?["artistId"] as? Int64;
         let trackName = representation?["trackName"] as? String;
         let artistName = representation?["artistName"] as? String;
         let kind = representation?["kind"] as? String;
         let viewUrl = representation?["trackViewUrl"] as? String
         let artworkUrl = representation?["artworkUrl100"] as? String
         
-        self.trackId = trackId!;
-        self.trackName = trackName!;
-        self.artistName = artistName!;
-        self.kind = kind!;
+        self.trackId = trackId;
+        self.artistId = artistId;
+        self.trackName = trackName;
+        self.artistName = artistName;
+        self.kind = kind;
         self.viewUrl = viewUrl;
         self.artworkUrl = artworkUrl;
     }
     
     func getKind() -> String {
-        switch self.kind {
+        if (self.kind == nil) {
+            return "";
+        }
+        switch self.kind! {
         case "book":
             return "Book";
         case "album":
